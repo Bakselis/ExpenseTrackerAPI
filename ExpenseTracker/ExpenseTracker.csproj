@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>aspnet-ExpenseTracker-DCFD78D2-8A90-4736-880F-6AE478C12A39</UserSecretsId>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <RootNamespace>ExpenseTracker</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Nowarn>$(NoWarn);1591</Nowarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="FluentValidation" Version="9.2.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="9.2.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0-preview6.19307.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0-preview6.19307.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0-preview5.19227.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0-preview5.19227.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview5.19227.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.0-rc.1.20451.7" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.0.0-rc7" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>
