@@ -15,7 +15,7 @@ namespace ExpenseTracker.Data
 
         public DbSet<Tag> Tags { get; set; }
 
-        public DbSet<ExpenseTag> PostTags { get; set; }
+        public DbSet<ExpenseTag> ExpenseTags { get; set; }
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 

@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace ExpenseTracker.Data.Migrations
+namespace ExpenseTracker.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200926151046_AddedValueToExpenses")]
-    partial class AddedValueToExpenses
+    [Migration("20200927124539_CreatedExpenses")]
+    partial class CreatedExpenses
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,25 +38,20 @@ namespace ExpenseTracker.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Expenses");
                 });
 
             modelBuilder.Entity("ExpenseTracker.Domain.ExpenseTag", b =>
                 {
-                    b.Property<Guid>("PostId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("ExpenseId");
 
                     b.Property<string>("TagName");
 
-                    b.Property<Guid?>("ExpenseId");
-
-                    b.HasKey("PostId", "TagName");
-
-                    b.HasIndex("ExpenseId");
+                    b.HasKey("ExpenseId", "TagName");
 
                     b.HasIndex("TagName");
 
-                    b.ToTable("PostTags");
+                    b.ToTable("ExpenseTags");
                 });
 
             modelBuilder.Entity("ExpenseTracker.Domain.RefreshToken", b =>
@@ -272,7 +267,9 @@ namespace ExpenseTracker.Data.Migrations
                 {
                     b.HasOne("ExpenseTracker.Domain.Expense", null)
                         .WithMany("Tags")
-                        .HasForeignKey("ExpenseId");
+                        .HasForeignKey("ExpenseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ExpenseTracker.Domain.Tag", "Tag")
                         .WithMany()

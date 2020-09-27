@@ -111,6 +111,7 @@ namespace ExpenseTracker.Controllers.V1
                 Id = newExpenseId,
                 Title = expenseRequest.Title,
                 UserId = HttpContext.GetUserId(),
+                Value = expenseRequest.Value,
                 DateAdded = DateTime.Now,
                 Tags = expenseRequest.Tags.Select(x=> new ExpenseTag{ExpenseId = newExpenseId, TagName = x}).ToList()
             };
