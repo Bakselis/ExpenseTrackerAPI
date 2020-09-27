@@ -63,7 +63,12 @@ namespace ExpenseTracker.Controllers.V1
             }
 
             var expense = await _expenseService.GetExpenseByIdAsync(expenseId);
+
             expense.Title = request.Title;
+            expense.Value = request.Value;
+            expense.DateAdded = DateTime.Now;
+            expense.Tags = request.Tags.Select(x => new ExpenseTag {ExpenseId = expenseId, TagName = x})
+                .ToList();
 
             var updated = await _expenseService.UpdateExpenseAsync(expense);
 

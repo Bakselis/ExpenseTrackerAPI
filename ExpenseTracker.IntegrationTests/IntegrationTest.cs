@@ -37,8 +37,13 @@ namespace ExpenseTracker.IntegrationTest
 
         protected async Task<HttpResponseMessage> CreateExpenseAsync(CreateExpenseRequest request)
         {
-            var response = await TestClient.PostAsJsonAsync(ApiRoutes.Expenses.Create, request);
-            return response;
+            return await TestClient.PostAsJsonAsync(ApiRoutes.Expenses.Create, request);
+        }
+        
+        protected async Task<HttpResponseMessage> UpdateExpenseAsync(Guid expenseId, UpdateExpenseRequest request)
+        {
+            var t = ApiRoutes.Expenses.Update.Replace("{expenseId}", expenseId.ToString());
+            return await TestClient.PutAsJsonAsync(ApiRoutes.Expenses.Update.Replace("{expenseId}", expenseId.ToString()), request);
         }
 
         protected async Task AuthenticateAsync()
