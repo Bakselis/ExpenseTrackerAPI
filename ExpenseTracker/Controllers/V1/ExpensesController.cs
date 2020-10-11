@@ -63,27 +63,26 @@ namespace ExpenseTracker.Controllers.V1
         /// Update expense
         /// </summary>
         [ProducesResponseType(typeof(Response<ExpenseResponse>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ExpenseFailedResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [HttpPut(ApiRoutes.Expenses.Update)]
         public async Task<IActionResult> Update([FromRoute]Guid expenseId, [FromBody] UpdateExpenseRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new ExpenseFailedResponse
-                {
-                    Errors = ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))
-                });
-            }
-            
             var userOwnsExpenses = await _expenseService.UserOwnsExpenseAsync(expenseId, HttpContext.GetUserId());
 
             if (!userOwnsExpenses)
             {
-                return BadRequest(new ExpenseFailedResponse
+                return BadRequest(new ErrorResponse()
                 {
-                    Errors = new[] {"You do not own this expense"}
+                    Errors = new List<ErrorModel>
+                    {
+                        new ErrorModel
+                        {
+                            FieldName = "userId",
+                            Message = "User does not own this expense"
+                        }
+                    }
                 });
             }
 
@@ -113,13 +112,20 @@ namespace ExpenseTracker.Controllers.V1
         [HttpDelete(ApiRoutes.Expenses.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid expenseId)
         {
-            var userOwnsPost = await _expenseService.UserOwnsExpenseAsync(expenseId, HttpContext.GetUserId());
+            var userOwnsExpense = await _expenseService.UserOwnsExpenseAsync(expenseId, HttpContext.GetUserId());
 
-            if (!userOwnsPost)
+            if (!userOwnsExpense)
             {
-                return BadRequest(new ExpenseFailedResponse
+                return BadRequest(new ErrorResponse()
                 {
-                    Errors = new[] {"You do not own this expense"}
+                    Errors = new List<ErrorModel>
+                    {
+                        new ErrorModel
+                        {
+                            FieldName = "userId",
+                            Message = "User does not own this expense"
+                        }
+                    }
                 });
             }
             
