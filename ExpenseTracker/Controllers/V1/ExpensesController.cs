@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using ExpenseTracker.Cache;
@@ -32,6 +33,12 @@ namespace ExpenseTracker.Controllers.V1
             _uriService = uirService;
         }
 
+        /// <summary>
+        /// Get all expenses 
+        /// </summary>
+        [ProducesResponseType(typeof(PagedResponse<ExpenseResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [HttpGet(ApiRoutes.Expenses.GetAll)]
         [Cached(600)]
         public async Task<IActionResult> GetAll([FromQuery] GetAllExpensesQuery getAllExpensesQuery, [FromQuery] PaginationQuery paginationQuery)
@@ -52,14 +59,32 @@ namespace ExpenseTracker.Controllers.V1
             return Ok(paginationResponse);
         }
 
+        /// <summary>
+        /// Update expense
+        /// </summary>
+        [ProducesResponseType(typeof(Response<ExpenseResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ExpenseFailedResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [HttpPut(ApiRoutes.Expenses.Update)]
         public async Task<IActionResult> Update([FromRoute]Guid expenseId, [FromBody] UpdateExpenseRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ExpenseFailedResponse
+                {
+                    Errors = ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage))
+                });
+            }
+            
             var userOwnsExpenses = await _expenseService.UserOwnsExpenseAsync(expenseId, HttpContext.GetUserId());
 
             if (!userOwnsExpenses)
             {
-                return BadRequest(new {error = "You do not own this expense"});
+                return BadRequest(new ExpenseFailedResponse
+                {
+                    Errors = new[] {"You do not own this expense"}
+                });
             }
 
             var expense = await _expenseService.GetExpenseByIdAsync(expenseId);
@@ -78,6 +103,13 @@ namespace ExpenseTracker.Controllers.V1
             return NotFound();
         }
 
+        /// <summary>
+        /// Delete expense
+        /// </summary>
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [HttpDelete(ApiRoutes.Expenses.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid expenseId)
         {
@@ -85,7 +117,10 @@ namespace ExpenseTracker.Controllers.V1
 
             if (!userOwnsPost)
             {
-                return BadRequest(new {error = "You do not own this post"});
+                return BadRequest(new ExpenseFailedResponse
+                {
+                    Errors = new[] {"You do not own this expense"}
+                });
             }
             
             var deleted = await _expenseService.DeleteExpenseAsync(expenseId);
@@ -96,6 +131,13 @@ namespace ExpenseTracker.Controllers.V1
             return NotFound();
         }
 
+        /// <summary>
+        /// Get expense by id
+        /// </summary>
+        [ProducesResponseType(typeof(Response<ExpenseResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [HttpGet(ApiRoutes.Expenses.Get)]
         public async Task<IActionResult> Get([FromRoute]Guid expenseId)
         {
@@ -107,6 +149,13 @@ namespace ExpenseTracker.Controllers.V1
             return Ok(new Response<ExpenseResponse>(_mapper.Map<ExpenseResponse>(expense)));
         }
 
+        /// <summary>
+        /// Create expense
+        /// </summary>
+        [ProducesResponseType(typeof(Response<ExpenseResponse>), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [HttpPost(ApiRoutes.Expenses.Create)]
         public async Task<IActionResult> Create([FromBody] CreateExpenseRequest expenseRequest)
         {
@@ -124,7 +173,7 @@ namespace ExpenseTracker.Controllers.V1
             await _expenseService.CreateExpenseAsync(expense);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUri = baseUrl + "/" + ApiRoutes.Expenses.Get.Replace("{newExpenseId}", expense.Id.ToString());
+            var locationUri = baseUrl + "/" + ApiRoutes.Expenses.Get.Replace("{expenseId}", expense.Id.ToString());
 
             return Created(locationUri, new Response<ExpenseResponse>(_mapper.Map<ExpenseResponse>(expense)));
         }

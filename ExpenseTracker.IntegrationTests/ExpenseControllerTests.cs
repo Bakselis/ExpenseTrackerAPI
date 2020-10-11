@@ -12,9 +12,9 @@ using ExpenseTracker.Contracts.V1.Responses;
 using ExpenseTracker.Domain;
 using Xunit;
 
-namespace Tweetbook.IntegrationTests
+namespace ExpenseTracker.IntegrationTests
 {
-    public class PostsControllerTests : IntegrationTest
+    public class PostsControllerTests : IntegrationTest.IntegrationTest
     {
         [Fact]
         public async Task GetAll_WithoutAnyExpenses_ReturnsEmptyResponse()

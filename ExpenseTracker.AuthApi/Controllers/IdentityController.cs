@@ -1,12 +1,14 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using ExpenseTracker.AuthApi.Contracts.V1.Requests;
+using ExpenseTracker.AuthApi.Contracts.V1.Responses;
+using ExpenseTracker.AuthApi.Services;
 using ExpenseTracker.Contracts.V1;
-using ExpenseTracker.Contracts.V1.Requests;
-using ExpenseTracker.Contracts.V1.Responses;
-using ExpenseTracker.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ExpenseTracker.Controllers.V1
+namespace ExpenseTracker.AuthApi.Controllers
 {
     public class IdentityController : Controller
     {
@@ -16,8 +18,13 @@ namespace ExpenseTracker.Controllers.V1
         {
             _identityService = identityService;
         }
-
+        
+        /// <summary>
+        /// Register to the system
+        /// </summary>
         [HttpPost(ApiRoutes.Identity.Register)]
+        [ProducesResponseType(typeof(AuthSuccessResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AuthFailedResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequest request)
         {
             if (!ModelState.IsValid)
@@ -45,7 +52,12 @@ namespace ExpenseTracker.Controllers.V1
             });
         }
         
+        /// <summary>
+        /// Login to the system
+        /// </summary>
         [HttpPost(ApiRoutes.Identity.Login)]
+        [ProducesResponseType(typeof(AuthSuccessResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AuthFailedResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest request)
         {
             var authResponse = await _identityService.LoginAsync(request.Email, request.Password);
@@ -65,7 +77,12 @@ namespace ExpenseTracker.Controllers.V1
             });
         }
         
+        /// <summary>
+        /// Refresh the JWT token by providing expired token and refresh token
+        /// </summary>
         [HttpPost(ApiRoutes.Identity.Refresh)]
+        [ProducesResponseType(typeof(AuthSuccessResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(AuthFailedResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
         {
             var authResponse = await _identityService.RefreshTokenAsync(request.Token, request.RefreshToken);

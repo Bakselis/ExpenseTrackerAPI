@@ -11,7 +11,7 @@ namespace ExpenseTracker.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            var connection = @"Server=db-server;Database=ExpenseTracker;User=sa;Password=Nick1234;";
+//            var connection = @"Server=db-server;Database=ExpenseTracker;User=sa;Password=Tomas1234;";
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection")));

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using ExpenseTracker.Contracts.V1;
@@ -14,7 +15,7 @@ using ExpenseTracker.Extensions;
 
 namespace ExpenseTracker.Controllers.V1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin,Poster")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     [Produces("application/json")]
     public class TagsController : Controller
     {
@@ -30,50 +31,56 @@ namespace ExpenseTracker.Controllers.V1
         /// <summary>
         /// Returns all the tags in the system
         /// </summary>
-        /// <response code="200">Returns all the tags in the system</response>
+        [ProducesResponseType(typeof(List<TagResponse>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         [HttpGet(ApiRoutes.Tags.GetAll)]
-        // [Authorize(Policy = "TagViewer")] // Used for CLAIMS
         public async Task<IActionResult> GetAll()
         {
             return Ok(_mapper.Map<List<TagResponse>>(await _tagService.GetAllTagsAsync()));
         }
         
         /// <summary>
-        /// Create tag in the system
+        /// Creates a tag in the system
         /// </summary>
-        /// <response code="201">Return created tag</response>
-        /// <response code="400">Unable to create the tag due to validation error</response>
-        [HttpPost(ApiRoutes.Tags.Create)]
-        [ProducesResponseType(typeof(TagResponse), 201)]
-        [ProducesResponseType(typeof(ErrorResponse), 400)]
+        [ProducesResponseType(typeof(Response<ExpenseResponse>), (int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateTagRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                
-            }
-            
-            var tag = new Tag()
+            var newTag = new Tag
             {
                 Name = request.Name,
-                CreatedOn = DateTime.UtcNow,
-                CreatorId = HttpContext.GetUserId()
+                CreatorId = HttpContext.GetUserId(),
+                CreatedOn = DateTime.UtcNow
             };
 
-            return Ok(_mapper.Map<TagResponse>(await _tagService.CreateTagAsync(tag)));
+            var created = await _tagService.CreateTagAsync(newTag);
+            if (!created)
+            {
+                return BadRequest(new ErrorResponse(
+                    new ErrorModel{Message = "Unable to create tag"})
+                );
+            }
+                
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
+            var locationUri = baseUrl + "/" + ApiRoutes.Tags.Get.Replace("{tagName}", newTag.Name);
+            return Created(locationUri, _mapper.Map<TagResponse>(newTag));
         }
         
+        /// <summary>
+        /// Delete tag in the system
+        /// </summary>
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         [HttpDelete(ApiRoutes.Tags.Delete)]
-        [Authorize(Roles = "Admin")]
-        [Authorize(Policy = "WorksForMe")]
-        public async Task<IActionResult> Delete([FromBody] CreateTagRequest request)
+        public async Task<IActionResult> Delete([FromRoute] string tagName)
         {
-            var tag = new Tag()
-            {
-                Name = request.Name
-            };
-            
-            var deleted = await _tagService.DeleteTagAsync(tag);
+            var deleted = await _tagService.DeleteTagAsync(tagName);
 
             if (deleted)
                 return NoContent();

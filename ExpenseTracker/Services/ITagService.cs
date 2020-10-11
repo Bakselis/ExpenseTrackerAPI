@@ -10,8 +10,8 @@ namespace ExpenseTracker.Services
     {
         Task<List<Tag>> GetAllTagsAsync();
 
-        Task<Tag> CreateTagAsync(Tag tag);
+        Task<bool> CreateTagAsync(Tag tag);
         
-        Task<bool> DeleteTagAsync(Tag tag);
+        Task<bool> DeleteTagAsync(string tagName);
     }
 }

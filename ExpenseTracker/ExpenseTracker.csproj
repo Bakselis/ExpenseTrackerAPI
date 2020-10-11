@@ -35,5 +35,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\ExpenseTracker.Contracts\ExpenseTracker.Contracts.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Contracts" />
+  </ItemGroup>
 
 </Project>

@@ -34,8 +34,6 @@ namespace ExpenseTracker.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Expenses");
                 });
 
@@ -71,8 +69,6 @@ namespace ExpenseTracker.Migrations
 
                     b.HasKey("Token");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("RefreshTokens");
                 });
 
@@ -85,8 +81,6 @@ namespace ExpenseTracker.Migrations
                     b.Property<string>("CreatorId");
 
                     b.HasKey("Name");
-
-                    b.HasIndex("CreatorId");
 
                     b.ToTable("Tags");
                 });
@@ -254,13 +248,6 @@ namespace ExpenseTracker.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ExpenseTracker.Domain.Expense", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
             modelBuilder.Entity("ExpenseTracker.Domain.ExpenseTag", b =>
                 {
                     b.HasOne("ExpenseTracker.Domain.Expense", null)
@@ -274,20 +261,6 @@ namespace ExpenseTracker.Migrations
                         .HasForeignKey("TagName")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ExpenseTracker.Domain.RefreshToken", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("ExpenseTracker.Domain.Tag", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatorId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

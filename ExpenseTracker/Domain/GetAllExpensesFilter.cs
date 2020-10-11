@@ -1,7 +1,9 @@
+using System;
+
 namespace ExpenseTracker.Domain
 {
     public class GetAllExpensesFilter
     {
-        public string UserId { get; set; }
+        public float Value { get; set; }
     }
 }

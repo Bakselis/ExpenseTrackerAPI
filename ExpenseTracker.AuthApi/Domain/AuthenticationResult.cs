@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ExpenseTracker.Domain
+namespace ExpenseTracker.AuthApi.Domain
 {
     public class AuthenticationResult
     {

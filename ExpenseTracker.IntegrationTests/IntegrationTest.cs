@@ -53,13 +53,6 @@ namespace ExpenseTracker.IntegrationTest
 
         private async Task<string> GetJwtAsync()
         {
-            // var response = await TestClient.PostAsync(ApiRoute.Identity.Register, new StringContent(JsonConvert.SerializeObject(new RegistrationRequest
-            //     {
-            //         Email="test@integrationtests.com",
-            //         Password = "SomePassword123!"
-            //     }), 
-            // Encoding.UTF8, "application/json"));
-            //
             var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new UserRegistrationRequest
             {
                 Email="test@integrationtests.com",

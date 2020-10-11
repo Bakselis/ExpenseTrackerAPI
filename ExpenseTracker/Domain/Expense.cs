@@ -18,9 +18,6 @@ namespace ExpenseTracker.Domain
 
         public DateTime DateAdded { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public IdentityUser User { get; set; }
-
         public virtual List<ExpenseTag> Tags { get; set; }
     }
 }

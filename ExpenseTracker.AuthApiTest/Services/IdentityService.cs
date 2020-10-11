@@ -5,6 +5,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using ExpenseTracker.AuthApi.Domain;
+using ExpenseTracker.AuthApi.Services;
 using ExpenseTracker.Data;
 using ExpenseTracker.Domain;
 using ExpenseTracker.Options;

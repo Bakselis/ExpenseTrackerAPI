@@ -13,6 +13,8 @@ namespace ExpenseTracker.MappingProfiles
         {
             CreateMap<PaginationQuery, PaginationFilter>();
             CreateMap<GetAllExpensesQuery, GetAllExpensesFilter>();
+//            CreateMap<CreateTagRequest, Tag>()
+//                .ForMember(dest => dest.CreatedOn, opt => opt.MapFrom<CustomResolver>());
         }
     }
 }

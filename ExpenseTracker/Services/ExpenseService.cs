@@ -112,9 +112,9 @@ namespace ExpenseTracker.Services
         
         private static IQueryable<Expense> AddFiltersOnQueryable(GetAllExpensesFilter expensesFilter, IQueryable<Expense> queryable)
         {
-            if (!string.IsNullOrEmpty(expensesFilter?.UserId))
+            if (expensesFilter.Value!=null)
             {
-                queryable = queryable.Where(x => x.UserId == expensesFilter.UserId);
+                queryable = queryable.Where(x => Math.Abs(x.Value - expensesFilter.Value) < 0.1);
             }
 
             return queryable;

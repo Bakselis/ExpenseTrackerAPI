@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Services
 {
-    public class TagSevice
+    public class TagSevice : ITagService
     {
         
         private readonly DataContext _dataContext;
@@ -21,25 +21,23 @@ namespace ExpenseTracker.Services
             return await _dataContext.Tags.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Tag> CreateTagAsync(Tag tag)
+        public async Task<bool> CreateTagAsync(Tag tag)
         {
-            var existingTag =
-                await _dataContext.Tags.SingleOrDefaultAsync(x =>
-                    x.Name == tag.Name);
+            tag.Name = tag.Name.ToLower();
+            var existingTag = await _dataContext.Tags.AsNoTracking().SingleOrDefaultAsync(x => x.Name == tag.Name);
             if (existingTag != null)
-            {
-                return existingTag;
-            }
+                return true;
+
             await _dataContext.Tags.AddAsync(tag);
-            await _dataContext.SaveChangesAsync();
-            return tag;
+            var created = await _dataContext.SaveChangesAsync();
+            return created > 0;
         }
 
-        public async Task<bool> DeleteTagAsync(Tag tag)
+        public async Task<bool> DeleteTagAsync(string tagName)
         {
             var existingTag =
                 await _dataContext.Tags.SingleOrDefaultAsync(x =>
-                    x.Name == tag.Name);
+                    x.Name == tagName);
 
             if (existingTag == null)
             {
