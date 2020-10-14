@@ -1,15 +1,15 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using ExpenseTracker.AuthApi.Contracts.V1;
 using ExpenseTracker.AuthApi.Contracts.V1.Requests;
 using ExpenseTracker.AuthApi.Contracts.V1.Responses;
 using ExpenseTracker.AuthApi.Services;
-using ExpenseTracker.Contracts.V1;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTracker.AuthApi.Controllers
 {
+    [Produces("application/json")]
     public class IdentityController : Controller
     {
         private readonly IIdentityService _identityService;

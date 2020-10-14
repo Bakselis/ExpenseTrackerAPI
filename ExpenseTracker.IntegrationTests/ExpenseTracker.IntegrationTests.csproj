@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ExpenseTracker.AuthApi\ExpenseTracker.AuthApi.csproj" />
       <ProjectReference Include="..\ExpenseTracker\ExpenseTracker.csproj" />
     </ItemGroup>
 

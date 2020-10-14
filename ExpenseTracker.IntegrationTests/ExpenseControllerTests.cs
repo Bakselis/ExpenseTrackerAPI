@@ -14,13 +14,13 @@ using Xunit;
 
 namespace ExpenseTracker.IntegrationTests
 {
-    public class PostsControllerTests : IntegrationTest.IntegrationTest
+    public class ExpenseControllerTests : IntegrationTest.IntegrationTest
     {
         [Fact]
         public async Task GetAll_WithoutAnyExpenses_ReturnsEmptyResponse()
         {
             // Arrange
-            await AuthenticateAsync();
+            Authenticate();
 
             // Act
             var response = await TestClient.GetAsync(ApiRoutes.Expenses.GetAll);
@@ -35,7 +35,7 @@ namespace ExpenseTracker.IntegrationTests
         public async Task GetExpense_WithoutAnyExpenses_ReturnsEmptyResponse()
         {
             // Arrange
-            await AuthenticateAsync();
+            Authenticate();
 
             // Act
             var response = await TestClient.GetAsync(ApiRoutes.Expenses.Get.Replace("{expenseId}", new Guid().ToString()));
@@ -48,7 +48,7 @@ namespace ExpenseTracker.IntegrationTests
         public async Task Post_ReturnsExpense_WhenExpenseIsCreated()
         {
             // Arrange
-            await AuthenticateAsync();
+            Authenticate();
             
             // Act
             var createdResponse = await CreateTemplateExpense();
@@ -66,7 +66,7 @@ namespace ExpenseTracker.IntegrationTests
         public async Task Get_ReturnsExpense_WhenExpenseExistsInTheDatabase()
         {
             // Arrange
-            await AuthenticateAsync();
+            Authenticate();
             var createdResponse = await CreateTemplateExpense();
 
             var createdExpense = (await createdResponse.Content.ReadAsAsync<Response<ExpenseResponse>>()).Data;
@@ -86,7 +86,7 @@ namespace ExpenseTracker.IntegrationTests
         public async Task Put_ReturnsOkAndUpdatedExpenseInTheDatabase_WhenExpenseIsUpdated()
         {
             // Arrange
-            await AuthenticateAsync();
+            Authenticate();
             var createdResponse = (await (await CreateTemplateExpense()).Content.ReadAsAsync<Response<ExpenseResponse>>()).Data;
             
             var updatedResponse = await UpdateExpenseAsync(createdResponse.Id, new UpdateExpenseRequest

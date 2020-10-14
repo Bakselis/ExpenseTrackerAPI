@@ -21,11 +21,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0-preview6.19307.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0-preview5-19227-01" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0-preview6.19307.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0-preview5.19227.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.0.0-preview5.19227.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0-preview5.19227.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.0-rc.1.20451.7" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="3.0.0-preview5-19227-01" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.0.0-rc7" />
   </ItemGroup>
   
@@ -36,12 +36,4 @@
     </Content>
   </ItemGroup>
   
-  <ItemGroup>
-    <ProjectReference Include="..\ExpenseTracker.Contracts\ExpenseTracker.Contracts.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Contracts" />
-  </ItemGroup>
-
 </Project>

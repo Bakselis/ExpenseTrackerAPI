@@ -1,17 +1,21 @@
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using ExpenseTracker.AuthApi.Contracts.V1.Responses;
+using ExpenseTracker.Contracts.V1;
+using ExpenseTracker.Contracts.V1.Requests;
+using ExpenseTracker.Data;
+using IntegrationTests;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Xunit;
-using ExpenseTracker.Contracts.V1;
-using ExpenseTracker.Contracts.V1.Requests;
-using ExpenseTracker.Contracts.V1.Responses;
-using ExpenseTracker.Data;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 namespace ExpenseTracker.IntegrationTest
 {
@@ -19,6 +23,10 @@ namespace ExpenseTracker.IntegrationTest
     {
         protected readonly HttpClient TestClient;
         private readonly IServiceProvider _serviceProvider;
+        
+        public static ILogger<ConsoleLoggerProvider> AppLogger = null;
+        public static ILoggerFactory loggerFactory = null;
+        
         protected IntegrationTest()
         {
             var appFactory = new WebApplicationFactory<Startup>().WithWebHostBuilder(builder => {
@@ -29,8 +37,12 @@ namespace ExpenseTracker.IntegrationTest
                         {
                             options.UseInMemoryDatabase("TestDb");
                         });
+                        services.AddLogging(build => build.AddConsole().AddFilter(level => level >= LogLevel.Trace));
+                        loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
+                        AppLogger = loggerFactory.CreateLogger<ConsoleLoggerProvider>();
                     });
-                });
+            });
+            
             _serviceProvider = appFactory.Services;
             TestClient = appFactory.CreateClient();
         }
@@ -46,22 +58,26 @@ namespace ExpenseTracker.IntegrationTest
             return await TestClient.PutAsJsonAsync(ApiRoutes.Expenses.Update.Replace("{expenseId}", expenseId.ToString()), request);
         }
 
-        protected async Task AuthenticateAsync()
+        protected void Authenticate()
         {
-            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync());
+            var claims = MockJwtTokens.UserClaims();
+            var jwt = MockJwtTokens.GenerateJwtToken(claims);
+            TestClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", jwt);
         }
 
-        private async Task<string> GetJwtAsync()
-        {
-            var response = await TestClient.PostAsJsonAsync(ApiRoutes.Identity.Register, new UserRegistrationRequest
-            {
-                Email="test@integrationtests.com",
-                Password = "SomePassword123!"
-            });
-            
-            var registrationResponse = await response.Content.ReadAsAsync<AuthSuccessResponse>();
-            return registrationResponse.Token;
-        }
+//        private async Task<string> GetJwtAsync()
+//        {
+//            var claims = await MockJwtTokens.UserClaims();
+//            return MockJwtTokens.GenerateJwtToken(claims);
+//            var response = await TestClientAuth.PostAsJsonAsync(AuthApi.Contracts.V1.ApiRoutes.Identity.Register, new UserRegistrationRequest
+//            {
+//                Email="test@integrationtests.com",
+//                Password = "SomePassword123!"
+//            });
+//            
+//            var registrationResponse = await response.Content.ReadAsAsync<AuthSuccessResponse>();
+//            return registrationResponse.Token;
+//        }
 
         public void Dispose()
         {

@@ -22,12 +22,5 @@
             public const string Create = Base + "/tags";
             public const string Delete = Base + "/tags/{tagName}";
         }
-
-        public static class Identity
-        {
-            public const string Login = Base + "/identity/login";
-            public const string Register = Base + "/identity/register";
-            public const string Refresh = Base + "/identity/refresh";
-        }
     }
 }
