@@ -13,11 +13,7 @@ namespace ExpenseTracker.Installers
         {
 //            var connection = @"Server=db-server;Database=ExpenseTracker;User=sa;Password=Tomas1234;";
             services.AddDbContext<DataContext>(options =>
-                options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection")));
-            
-//            services.AddDbContext<DataContext>(options =>
-//                options.UseSqlServer(connection));
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             
             services.AddDefaultIdentity<IdentityUser>()
                 .AddRoles<IdentityRole>()
