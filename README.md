@@ -15,9 +15,11 @@ _P.S. Documentations were automatically generated and then uploaded to swaggerhu
 * JWT tokens
 * Refresh tokens
 * Docker
+* Kubernetes
 * Redis (Caching)
 * Unit testing
 * Integration testing
 * Continues testing
+* Swagger
 
 
