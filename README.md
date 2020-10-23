@@ -11,13 +11,15 @@ _P.S. Documentations were automatically generated and then uploaded to swaggerhu
 
 ![alt text](./Screenshots/swagger_documentation_main.png)
 ![alt text](./Screenshots/swagger_documentation_auth.png)
-## Project features:
+## Project technologies:
 * JWT tokens
 * Refresh tokens
 * Docker
+* Kubernetes
 * Redis (Caching)
 * Unit testing
 * Integration testing
 * Continues testing
+* Swagger
 
 
