@@ -16,23 +16,23 @@ namespace ExpenseTracker
 
             using (var serviceScope = host.Services.CreateScope())
             {
-                var dbContext = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
-
-                await dbContext.Database.MigrateAsync();
-
-                var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-                if (!await roleManager.RoleExistsAsync("Admin"))
-                {
-                    var adminRole = new IdentityRole("Admin");
-                    await roleManager.CreateAsync(adminRole);
-                }
-                
-                if (!await roleManager.RoleExistsAsync("Poster"))
-                {
-                    var adminRole = new IdentityRole("Poster");
-                    await roleManager.CreateAsync(adminRole);
-                }
+//                var dbContext = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
+//
+//                await dbContext.Database.MigrateAsync();
+//
+//                var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//
+//                if (!await roleManager.RoleExistsAsync("Admin"))
+//                {
+//                    var adminRole = new IdentityRole("Admin");
+//                    await roleManager.CreateAsync(adminRole);
+//                }
+//                
+//                if (!await roleManager.RoleExistsAsync("Poster"))
+//                {
+//                    var adminRole = new IdentityRole("Poster");
+//                    await roleManager.CreateAsync(adminRole);
+//                }
             }
 
             await host.RunAsync();

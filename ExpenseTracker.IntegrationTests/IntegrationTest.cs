@@ -1,17 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ExpenseTracker.AuthApi.Contracts.V1.Responses;
+using ExpenseTracker.Cache;
 using ExpenseTracker.Contracts.V1;
 using ExpenseTracker.Contracts.V1.Requests;
 using ExpenseTracker.Data;
 using IntegrationTests;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -29,6 +33,8 @@ namespace ExpenseTracker.IntegrationTest
         
         protected IntegrationTest()
         {
+            var projectDir = Directory.GetCurrentDirectory();
+            var configPath = Path.Combine(projectDir, "appsettings.json");
             var appFactory = new WebApplicationFactory<Startup>().WithWebHostBuilder(builder => {
                     builder.ConfigureServices(services =>
                     {
@@ -40,6 +46,10 @@ namespace ExpenseTracker.IntegrationTest
                         services.AddLogging(build => build.AddConsole().AddFilter(level => level >= LogLevel.Trace));
                         loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
                         AppLogger = loggerFactory.CreateLogger<ConsoleLoggerProvider>();
+                    });
+                    builder.ConfigureAppConfiguration((context, conf) =>
+                    {
+                        conf.AddJsonFile(configPath);
                     });
             });
             
