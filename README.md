@@ -19,7 +19,7 @@ _P.S. Documentations were automatically generated and then uploaded to swaggerhu
 * Redis (Caching)
 * Unit testing
 * Integration testing
-* Continues testing
+* Continuous integration
 * Swagger
 
 
